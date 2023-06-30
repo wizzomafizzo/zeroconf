@@ -23,7 +23,7 @@ var (
 func main() {
 	flag.Parse()
 
-	server, err := zeroconf.Register(*name, *service, *domain, *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
+	server, err := zeroconf.Register(*name, *service, "", *domain, *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
 		panic(err)
 	}
