@@ -72,7 +72,8 @@ type lookupParams struct {
 
 	isBrowsing  bool
 	stopProbing chan struct{}
-	once        sync.Once
+	noMore      sync.Once
+	stop        sync.Once
 }
 
 // newLookupParams constructs a lookupParams.
@@ -91,11 +92,11 @@ func newLookupParams(instance, service, domain string, isBrowsing bool, entries 
 // Notify subscriber that no more entries will arrive. Mostly caused
 // by an expired context.
 func (l *lookupParams) done() {
-	close(l.Entries)
+	l.noMore.Do(func() { close(l.Entries) })
 }
 
 func (l *lookupParams) disableProbing() {
-	l.once.Do(func() { close(l.stopProbing) })
+	l.stop.Do(func() { close(l.stopProbing) })
 }
 
 // ServiceEntry represents a browse/lookup result for client API.
